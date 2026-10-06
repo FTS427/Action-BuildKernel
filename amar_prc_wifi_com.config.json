@@ -1,0 +1,43 @@
+[
+  {
+    "kernelSource": {
+      "name": "neko",
+      "repo": "https://codeberg.org/QuantumLS-Studio/android_kernel_lenovo_amar_prc_wifi_com",
+      "branch": "main",
+      "device": "amar_prc_wifi_com",
+      "defconfig": "amar_prc_wifi_com_defconfig"
+    },
+    "toolchains": [
+      {
+        "name": "clang",
+        "repo": "https://github.com/MizProject/clang-r416183b",
+        "branch": "main",
+        "binaryEnv": ["./bin"]
+      },
+      {
+        "name": "gcc",
+        "repo": "https://github.com/FTS427/kernel_build_toolkits",
+        "branch": "4.19",
+        "binaryEnv": ["./prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin"]
+      }
+    ],
+    "enableCcache": true,
+    "params": {
+      "ARCH": "arm64",
+      "CC": "clang",
+      "externalCommands": {
+        "CROSS_COMPILE": "aarch64-linux-android-",
+        "CLANG_TRIPLE": "aarch64-linux-gnu-"
+      }
+    },
+    "AnyKernel3": {
+      "use": false,
+      "release": false,
+      "custom": {
+        "repo": "https://github.com//FTS427/AnyKernel3",
+        "branch": "main"
+      }
+    },
+    "enableBakaSU": true
+  }
+]
