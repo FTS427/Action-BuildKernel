@@ -85,7 +85,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y curl git ftp lftp wget libarchive-tools ccache python3
           sudo apt-get install -y pngcrush schedtool dpkg-dev liblz4-tool make optipng maven device-tree-compiler 
-          sudo apt-get install -y libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc
+          sudo apt-get install -y libc6-dev-i386 libx11-dev lib32z-dev libgl1-mesa-dev xsltproc
           sudo apt-get install -y libxml2-utils libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools lzop flex tree
           sudo apt-get install -y build-essential bc gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi libssl-dev libfl-dev
           sudo apt-get install -y pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl 
@@ -307,13 +307,20 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: ☢️ Upload output directory
+      - name: ☢️ Upload output directory & kernel modules
         uses: actions/upload-artifact@v4
         env:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Output
-          path: ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/
+          path: |
+            ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/
+            ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_drv/wmt_drv.ko
+            ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_chrdev_wifi/wmt_chrdev_wifi.ko
+            ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wlan_drv_gen4m/wlan_drv_gen4m.ko
+            ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/bt/bt_drv.ko
+            ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/gps/gps_drv.ko
+            ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/fmradio/fmradio_drv.ko
           retention-days: 7
 
       - name: ⏰ Pack Anykernel3
