@@ -53,9 +53,6 @@ jobs:
       KERNEL_DEVICE: ${{ matrix.CONFIG.kernelSource.device }}
       KERNEL_DEFCONFIG_PATH: ${{ matrix.CONFIG.kernelSource.defconfig }}
 
-      # Whether to use ccache to speed up compilation
-      ENABLE_CCACHE: ${{ matrix.CONFIG.enableCcache }}
-
       # Whether to use ANYKERNEL3 packaged flash package
       USE_ANYKERNEL3: ${{ matrix.CONFIG.AnyKernel3.use }}
 
@@ -93,7 +90,6 @@ jobs:
 
       # Initialize ccache
       - name: 🚄 Setup ccache
-        if: ${{ env.ENABLE_CCACHE == 'true' }}
         id: hash
         run: |
           # Create output directory
@@ -109,7 +105,6 @@ jobs:
       - name: 🚅 Cache ccache & output
         env:
           HASH: ${{ steps.hash.outputs.HASH }}
-        if: ${{ env.ENABLE_CCACHE == 'true' }}
         uses: actions/cache@v3
         with:
           path: |
@@ -202,11 +197,7 @@ jobs:
               CC=${{ env.WORKSPACE }}/$CC
             fi
 
-            if [ ${{ env.ENABLE_CCACHE }} = true ]; then
-              args="$args CC=\"ccache $CC\""
-            else
-              args="$args CC=$CC"
-            fi
+            args="$args CC=\"ccache $CC\""
           fi
           while read -r externalCommand; do
             key=$(echo "$externalCommand" | cut -d= -f1)
@@ -361,6 +352,13 @@ jobs:
               cp -f ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtbo.img ./AnyKernel3/
             fi
           fi
+
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_drv/wmt_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_chrdev_wifi/wmt_chrdev_wifi.ko ./AnyKernel3/modules/system/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wlan_drv_gen4m/wlan_drv_gen4m.ko ./AnyKernel3/modules/system/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/bt/bt_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/gps/gps_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/fmradio/fmradio_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
 
           cd AnyKernel3/
           zip -q -r "${{ env.ANYKERNEL3_FILE }}.zip" *

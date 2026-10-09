@@ -21,7 +21,6 @@
         "binaryEnv": ["./prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin"]
       }
     ],
-    "enableCcache": true,
     "params": {
       "ARCH": "arm64",
       "CC": "clang",
@@ -31,11 +30,11 @@
       }
     },
     "AnyKernel3": {
-      "use": false,
-      "release": false,
+      "use": true,
+      "release": true,
       "custom": {
-        "repo": "https://github.com//FTS427/AnyKernel3",
-        "branch": "main"
+        "repo": "https://github.com/FTS427/AnyKernel3",
+        "branch": "master"
       }
     },
     "enableBakaSU": true
