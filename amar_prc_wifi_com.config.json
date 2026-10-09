@@ -16,9 +16,9 @@
       },
       {
         "name": "gcc",
-        "repo": "https://github.com/FTS427/kernel_build_toolkits",
-        "branch": "4.19",
-        "binaryEnv": ["./prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin"]
+        "repo": "https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9",
+        "branch": "lineage-18.1",
+        "binaryEnv": ["./bin"]
       }
     ],
     "params": {
