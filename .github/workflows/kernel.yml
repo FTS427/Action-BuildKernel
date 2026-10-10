@@ -16,7 +16,7 @@ jobs:
     steps:
       # This action checks-out your CONFIGSitory under $GITHUB_WORKSPACE, so your workflow can access it.
       - name: 😄 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Match the configuration files in the CONFIGS directory, read the contents and merge them into an array.
       - name: 😆 Generate Matrix
@@ -74,7 +74,7 @@ jobs:
 
       # This action checks-out your CONFIGSitory under $GITHUB_WORKSPACE, so your workflow can access it.
       - name: 😄 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Install prerequisites for Ubuntu
       - name: ⭐ Install prerequisites
@@ -105,7 +105,7 @@ jobs:
       - name: 🚅 Cache ccache & output
         env:
           HASH: ${{ steps.hash.outputs.HASH }}
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.OUT_DIR }}
@@ -215,8 +215,6 @@ jobs:
 
       - name: 😋 Setup BakaSU
         working-directory: ${{ env.KERNEL_NAME }}
-        env:
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
         if: ${{ env.ENABLE_BAKASU == 'true' }}
         run: |
           # Delete old BakaSU
@@ -248,9 +246,7 @@ jobs:
           make ${{ env.ARGS }}
 
       - name: 💛 Upload Image
-        uses: actions/upload-artifact@v4
-        env:
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Image
           path: ${{ env.OUT_DIR }}/arch/arm64/boot/Image
@@ -258,29 +254,15 @@ jobs:
           retention-days: 7
 
       - name: 💙 Upload Image.gz
-        uses: actions/upload-artifact@v4
-        env:
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Image.gz
           path: ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: 💙 Upload Image.gz-dtb
-        uses: actions/upload-artifact@v4
-        env:
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
-        with:
-          name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Image.gz-dtb
-          path: ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz-dtb
-          if-no-files-found: ignore
-          retention-days: 7
-
       - name: 💜 Upload dtb
-        uses: actions/upload-artifact@v4
-        env:
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-dtb
           path: ${{ env.OUT_DIR }}/arch/arm64/boot/dtb
@@ -288,9 +270,7 @@ jobs:
           retention-days: 7
 
       - name: ❤️ Upload dtbo.img
-        uses: actions/upload-artifact@v4
-        env:
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-dtbo.img
           path: ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img
@@ -298,9 +278,7 @@ jobs:
           retention-days: 7
 
       - name: ☢️ Upload output directory & kernel modules
-        uses: actions/upload-artifact@v4
-        env:
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Output
           path: |
@@ -317,7 +295,6 @@ jobs:
         if: ${{ env.USE_ANYKERNEL3 == 'true' }}
         env:
           PARAMS: "${{ toJSON(matrix.CONFIG.AnyKernel3) }}"
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
           ANYKERNEL3_FILE: "${{ env.WORKSPACE }}/AnyKernel3-${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}"
         run: |
           if echo -n '${{ env.PARAMS }}' | jq -e 'has("custom")' > /dev/null; then
@@ -334,22 +311,17 @@ jobs:
             echo "🤔 Use origin Anykernel3 => (https://github.com/osm0sis/AnyKernel3)"
           fi
 
-
-          if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz-dtb" ]; then
-            cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz-dtb ./AnyKernel3/
-          else
-            if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image" ]; then
-              cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image ./AnyKernel3/
-            fi
-            if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz" ]; then
-              cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz ./AnyKernel3/
-            fi
-            if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/dtbo" ]; then
-              cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo ./AnyKernel3/
-            fi
-            if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img" ]; then
-              cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img ./AnyKernel3/
-            fi
+          if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image" ]; then
+            cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image ./AnyKernel3/
+          fi
+          if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz" ]; then
+            cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz ./AnyKernel3/
+          fi
+          if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/dtbo" ]; then
+            cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo ./AnyKernel3/
+          fi
+          if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img" ]; then
+            cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img ./AnyKernel3/
           fi
 
           cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_drv/wmt_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
@@ -365,7 +337,7 @@ jobs:
       - name: "💾 Upload AnyKernel3 image => (${{ env.BUILD_DATE }})"
         env:
           ANYKERNEL3_FILE: "AnyKernel3-${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: ${{ env.USE_ANYKERNEL3 == 'true' }}
         with:
           name: "${{ env.ANYKERNEL3_FILE }}"
@@ -375,7 +347,7 @@ jobs:
         env:
           ANYKERNEL3_FILE: "${{ env.WORKSPACE }}/AnyKernel3-${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}"
         continue-on-error: true
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         if: ${{ env.USE_ANYKERNEL3 == 'true' && env.CONFIRM_RELEASE == 'true' }}
         with:
           tag_name: v${{ env.BUILD_DATE }}.${{ github.run_number }}
