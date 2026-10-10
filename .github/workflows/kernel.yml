@@ -232,7 +232,6 @@ jobs:
 
           echo -e "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
           echo -e "CONFIG_KSU_MANUAL=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
-          echo -e "CONFIG_KSU_TRACEPOINT_HOOK=n" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
           echo -e "CONFIG_KALLSYMS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
           echo -e "CONFIG_KALLSYMS_ALL=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
 
