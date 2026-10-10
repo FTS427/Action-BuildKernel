@@ -187,7 +187,7 @@ jobs:
         run: |
           echo "🤔 PATH Variable: $PATH"
 
-          ARCH=$(echo $PARAMS | jq -r ".ARCH")
+          ARCH=arm64
           CC=$(echo $PARAMS | jq -r ".CC")
 
           args="-j${{ env.THREAD }} O=${{ env.OUT_DIR }} ARCH=$ARCH"
@@ -230,12 +230,11 @@ jobs:
           # Apply new BakaSU patches
           curl -LSs "https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setup.sh" | bash
 
-          echo -e "CONFIG_KSU=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
-          echo -e "CONFIG_KSU_MANUAL=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
-          echo -e "CONFIG_KALLSYMS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
-          echo -e "CONFIG_KALLSYMS_ALL=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
+          echo -e "CONFIG_KSU=y" >> arch/arm64/configs/amar_prc_wifi_com_defconfig
+          echo -e "CONFIG_KSU_MANUAL=y" >> arch/arm64/configs/amar_prc_wifi_com_defconfig
+          echo -e "CONFIG_KALLSYMS_ALL=y" >> arch/arm64/configs/amar_prc_wifi_com_defconfig
 
-          cat arch/${{ env.ARCH }}/configs/${{ env.KERNEL_DEFCONFIG_PATH }}
+          cat arch/arm64/configs/amar_prc_wifi_com_defconfig
 
       - name: 👍 Start building the kernel
         working-directory: ${{ env.KERNEL_NAME }}
@@ -245,9 +244,8 @@ jobs:
           echo "🤔 PATH Variable: $PATH"
           export KBUILD_BUILD_HOST=Github-Action
           export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
-          make ${{ env.ARGS }} ${{ env.KERNEL_DEFCONFIG_PATH }}
+          make ${{ env.ARGS }} amar_prc_wifi_com_defconfig
           make ${{ env.ARGS }}
-          # tree ${{ env.OUT_DIR }}
 
       - name: 💛 Upload Image
         uses: actions/upload-artifact@v4
@@ -255,7 +253,7 @@ jobs:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Image
-          path: ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image
+          path: ${{ env.OUT_DIR }}/arch/arm64/boot/Image
           if-no-files-found: ignore
           retention-days: 7
 
@@ -265,7 +263,7 @@ jobs:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Image.gz
-          path: ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image.gz
+          path: ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz
           if-no-files-found: ignore
           retention-days: 7
 
@@ -275,7 +273,7 @@ jobs:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Image.gz-dtb
-          path: ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image.gz-dtb
+          path: ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz-dtb
           if-no-files-found: ignore
           retention-days: 7
 
@@ -285,7 +283,7 @@ jobs:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-dtb
-          path: ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtb
+          path: ${{ env.OUT_DIR }}/arch/arm64/boot/dtb
           if-no-files-found: ignore
           retention-days: 7
 
@@ -295,7 +293,7 @@ jobs:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-dtbo.img
-          path: ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtbo.img
+          path: ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img
           if-no-files-found: ignore
           retention-days: 7
 
@@ -306,7 +304,7 @@ jobs:
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-Output
           path: |
-            ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/
+            ${{ env.OUT_DIR }}/arch/arm64/boot/
             ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_drv/wmt_drv.ko
             ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_chrdev_wifi/wmt_chrdev_wifi.ko
             ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wlan_drv_gen4m/wlan_drv_gen4m.ko
@@ -337,20 +335,20 @@ jobs:
           fi
 
 
-          if [ -e "${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image.gz-dtb" ]; then
-            cp -f ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image.gz-dtb ./AnyKernel3/
+          if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz-dtb" ]; then
+            cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz-dtb ./AnyKernel3/
           else
-            if [ -e "${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image" ]; then
-              cp -f ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image ./AnyKernel3/
+            if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image" ]; then
+              cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image ./AnyKernel3/
             fi
-            if [ -e "${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image.gz" ]; then
-              cp -f ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/Image.gz ./AnyKernel3/
+            if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz" ]; then
+              cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz ./AnyKernel3/
             fi
-            if [ -e "${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtbo" ]; then
-              cp -f ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtbo ./AnyKernel3/
+            if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/dtbo" ]; then
+              cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo ./AnyKernel3/
             fi
-            if [ -e "${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtbo.img" ]; then
-              cp -f ${{ env.OUT_DIR }}/arch/${{ env.ARCH }}/boot/dtbo.img ./AnyKernel3/
+            if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img" ]; then
+              cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img ./AnyKernel3/
             fi
           fi
 
