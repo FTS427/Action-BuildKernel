@@ -230,9 +230,9 @@ jobs:
           # Apply new BakaSU patches
           curl -LSs "https://raw.githubusercontent.com/Baka-SU/BakaSU/main/kernel/setup.sh" | bash
 
-          echo -e "CONFIG_KSU=y" >> arch/arm64/configs/amar_prc_wifi_com_defconfig
-          echo -e "CONFIG_KSU_MANUAL=y" >> arch/arm64/configs/amar_prc_wifi_com_defconfig
           echo -e "CONFIG_KALLSYMS_ALL=y" >> arch/arm64/configs/amar_prc_wifi_com_defconfig
+          echo -e "CONFIG_KSU=y" >> arch/arm64/configs/amar_prc_wifi_com_defconfig
+          echo -e "CONFIG_KSU_MANUAL_HOOK=y" >> arch/arm64/configs/amar_prc_wifi_com_defconfig
 
           cat arch/arm64/configs/amar_prc_wifi_com_defconfig
 
