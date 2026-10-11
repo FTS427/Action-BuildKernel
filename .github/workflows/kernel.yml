@@ -325,12 +325,12 @@ jobs:
             cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo.img ./AnyKernel3/
           fi
 
-          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_drv/wmt_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
-          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_chrdev_wifi/wmt_chrdev_wifi.ko ./AnyKernel3/modules/system/vendor/lib/modules/
-          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wlan_drv_gen4m/wlan_drv_gen4m.ko ./AnyKernel3/modules/system/vendor/lib/modules/
-          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/bt/bt_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
-          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/gps/gps_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
-          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/fmradio/fmradio_drv.ko ./AnyKernel3/modules/system/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_drv/wmt_drv.ko ./AnyKernel3/modules/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wmt_chrdev_wifi/wmt_chrdev_wifi.ko ./AnyKernel3/modules/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/wlan_drv_gen4m/wlan_drv_gen4m.ko ./AnyKernel3/modules/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/bt/bt_drv.ko ./AnyKernel3/modules/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/gps/gps_drv.ko ./AnyKernel3/modules/vendor/lib/modules/
+          cp ${{ env.OUT_DIR }}/drivers/misc/mediatek/connectivity/fmradio/fmradio_drv.ko ./AnyKernel3/modules/vendor/lib/modules/
 
           cd AnyKernel3/
           zip -q -r "${{ env.ANYKERNEL3_FILE }}.zip" *
