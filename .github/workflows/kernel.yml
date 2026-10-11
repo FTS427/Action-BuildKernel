@@ -243,6 +243,7 @@ jobs:
           export KBUILD_BUILD_HOST=Github-Action
           export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
           make ${{ env.ARGS }} amar_prc_wifi_com_defconfig
+          make ${{ env.ARGS }} dtbs
           make ${{ env.ARGS }}
 
       - name: 💛 Upload Image
@@ -265,7 +266,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: ${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}-dtb
-          path: ${{ env.OUT_DIR }}/arch/arm64/boot/dtb
+          path: ${{ env.OUT_DIR }}/arch/arm64/boot/dts/mediatek/mt6765.dtb
           if-no-files-found: ignore
           retention-days: 7
 
@@ -311,11 +312,11 @@ jobs:
             echo "🤔 Use origin Anykernel3 => (https://github.com/osm0sis/AnyKernel3)"
           fi
 
-          if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image" ]; then
-            cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image ./AnyKernel3/
-          fi
           if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz" ]; then
             cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/Image.gz ./AnyKernel3/
+          fi
+          if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/dts/mediatek/mt6765.dtb" ]; then
+            cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dts/mediatek/mt6765.dtb ./AnyKernel3/
           fi
           if [ -e "${{ env.OUT_DIR }}/arch/arm64/boot/dtbo" ]; then
             cp -f ${{ env.OUT_DIR }}/arch/arm64/boot/dtbo ./AnyKernel3/
